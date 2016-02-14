@@ -102,8 +102,10 @@ var main = new UI.Card({
 
 var menu = new UI.Menu({
   sections: [{
+    title: "ScoreCards",
     items: [{
         title: 'New Game',
+        icon: 'IMAGES_SCORECARD_PNG'
     }, {
         title: 'Scores'
     },{
