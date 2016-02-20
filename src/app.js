@@ -19,10 +19,10 @@ Settings.config(
   { url: 'http://lehenry.github.io/config.html' },
   function(e) {
     console.log('closed configurable');
-    playersNames=Settings.data('playerNames');
-    // Show the parsed response
     console.log(JSON.stringify(e.options));
-
+    playersNames=Settings.option('playerNames');
+    init();
+    // Show the parsed response
     // Show the raw response if parsing failed
     if (e.failed) {
       console.log(e.response);
@@ -34,7 +34,7 @@ Settings.config(
 
 
 //var playersNames = ['Loic','Greg','Celine','PL'];
-var playersColors = ['red','green','pink','blue'];
+//var playersColors = ['red','green','pink','blue'];
 
 var Player=function(playerName,color){
   this.playerName=playerName;
@@ -108,7 +108,7 @@ function init(){
   currentRound=0;
   console.log("Init Players");
   for(var i=0;i<playersNames.length;i++){
-    players[i]=new Player(playersNames[i],playersColors[i]);
+    players[i]=new Player(playersNames[i],'red');
     console.log(playersNames[i]+" added");
   }
 }
