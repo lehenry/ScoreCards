@@ -53,7 +53,7 @@ Propable.makeAccessors(accessorProps, SCard.prototype);
 
 SCard.prototype._prop = function() {
   if (this === WindowStack.top()) {
-    simply.impl.card.apply(this, arguments);
+    simply.impl.scard.apply(this, arguments);
   }
 };
 
@@ -66,3 +66,4 @@ SCard.prototype._clear = function(flags) {
     this._clearAction();
   }
 };
+module.exports=SCard;

@@ -8,9 +8,32 @@ var currentRound=0;
 var players=[];
 
 var UI = require('ui');
+//var Player=require('lib/player');
+//var ScoreCard = require('lib/scoreCard.js');
 var Vector2 = require('vector2');
-//var Settings = require('settings');
-var playersNames = ['Loic','Greg','Celine','PL'];
+var Settings = require('settings');
+
+var playersNames =[] ;
+
+Settings.config(
+  { url: 'http://lehenry.github.io/config.html' },
+  function(e) {
+    console.log('closed configurable');
+    playersNames=Settings.data('playerNames');
+    // Show the parsed response
+    console.log(JSON.stringify(e.options));
+
+    // Show the raw response if parsing failed
+    if (e.failed) {
+      console.log(e.response);
+    }
+  }
+);
+
+
+
+
+//var playersNames = ['Loic','Greg','Celine','PL'];
 var playersColors = ['red','green','pink','blue'];
 
 var Player=function(playerName,color){
@@ -85,7 +108,7 @@ function init(){
   currentRound=0;
   console.log("Init Players");
   for(var i=0;i<playersNames.length;i++){
-    players.push(new Player(playersNames[i],playersColors[i]));
+    players[i]=new Player(playersNames[i],playersColors[i]);
     console.log(playersNames[i]+" added");
   }
 }
@@ -179,6 +202,7 @@ function newGame(){
     currentPlayer=-1;
     nextPlayer();
   }
+  menu.selection(0,3);
 }
 
 function nextPlayer(){

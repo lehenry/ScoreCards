@@ -1,4 +1,4 @@
-var ScoreCard = require('scoreCard');
+var Card = require('ui/card');
 var app = require('app');
 
 var Player=function(playerName,color){
@@ -6,7 +6,7 @@ var Player=function(playerName,color){
   this.score=0;
   this.roundScore=[];
   this.active=true;
-  this.card=new ScoreCard.SCard({
+  this.card=new Card.Card({
 //  action: {
 //    up: 'images/action_icon_plus.png',
 //    down: 'images/action_icon_minus.png'
