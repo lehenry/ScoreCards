@@ -10,16 +10,16 @@ var topPlayer=0;
 var players=[];
 
 var UI = require('ui');
-//var Player=require('lib/player');
-//var ScoreCard = require('lib/scoreCard.js');
 var Vector2 = require('vector2');
 var Settings = require('settings');
-
-var playersNames =['player1','player2'];
-
+console.log('Local: '+localStorage.getItem('playerNames'));
+var playersNames = [];
+if(localStorage.getItem('playerNames')){
+ playersNames = JSON.parse(localStorage.getItem('playerNames'));
+}
 // Load configuration
 Settings.config(
-  { url: 'http://lehenry.github.io/config.html' },
+  { url: 'http://lehenry.github.io/index.html' },
   function(e) {
     console.log('closed configurable');
     // Show the parsed response
@@ -47,16 +47,16 @@ var PlayerCard=function(playerName,color){
   });
   this.title = new UI.Text({
     position: new Vector2(0, 0),
-    size: new Vector2(144, 30),
+    size: new Vector2(144, 55),
     font: 'gothic-24-bold',
     text: playerName,
     textAlign: 'center'
   });
   this.wind.add(this.title);
   this.scoreBox = new UI.Text({
-    position: new Vector2(0, 35),
-    size: new Vector2(144, 30),
-    font: 'gothic-28-bold',
+    position: new Vector2(0, 55),
+    size: new Vector2(144, 35),
+    font: 'bitham-30-black',
     text: "0",
     backgroundColor: "white",
     color: "black",
@@ -65,7 +65,7 @@ var PlayerCard=function(playerName,color){
   this.wind.add(this.scoreBox);
   
   this.roundScoreBox = new UI.Text({
-    position: new Vector2(0, 70),
+    position: new Vector2(0, 90),
     size: new Vector2(144, 30),
     text: "",
     textAlign: 'center'
@@ -105,7 +105,7 @@ var PlayerCard=function(playerName,color){
 PlayerCard.prototype.displayScore=function(score,roundScore){
   this.scoreBox.text(score+"");
   this.roundScoreBox.text("Round #"+(currentRound+1)+": "+roundScore+"");
-  this.topScore.text("1st: "+ players[topPlayer].playerName+" - "+topScore);
+  this.topScore.text("1st: ["+ players[topPlayer].playerName.substring(0,16)+": "+topScore+"]");
 };
 
 
@@ -128,11 +128,7 @@ var Player=function(playerName,color){
 //    up: 'images/action_icon_plus.png',
 //    down: 'images/action_icon_minus.png'
   //  }});
- 
-  //this.card.title(this.playerName);
-  //this.card.titleColor=color;
-  //this.card.subtitle("0");
-  //this.card.subtitleColor=color;
+
   this.card.player=this;  
 };
 
@@ -197,7 +193,7 @@ var menu = new UI.Menu({
   sections: [{
     title: "ScoreCards",
     items: [{
-        title: 'New Game',
+        title: ' New Game',
         icon: 'IMAGES_SCORECARD_PNG'
     }, {
         title: 'Scores'
@@ -212,6 +208,7 @@ var menu = new UI.Menu({
 menu.on('select', function(e) {
   if(e.itemIndex===0){
       //new Game
+    e.itemIndex=3;
     newGame();
   } else if (e.itemIndex==1){
     displayScores();
@@ -231,6 +228,20 @@ menu.on('select', function(e) {
          subtitle:(players[ev.itemIndex].active)?"Active":"Inactive"
         });
     });
+    menuPlayers.on('longSelect', function(e) {
+      console.log(e.itemIndex);
+      for(var i=0;i<e.itemIndex;i++){
+        var last=players.shift();
+        players.push(last);
+      }
+      for(var j=0;j<playersNames.length;j++){
+        menuPlayers.item(0,j,
+          {title:players[j].playerName, 
+           subtitle:(players[j].active)?"Active":"Inactive"
+          });
+      }
+      menuPlayers.selection(0,0);
+    });
   } else if (e.itemIndex==3){
     if(currentPlayer==-1){
       nextPlayer();
@@ -240,6 +251,9 @@ menu.on('select', function(e) {
   }
 });
 
+
+
+        
 menu.show();
 
 
@@ -251,7 +265,6 @@ function newGame(){
     currentPlayer=-1;
     nextPlayer();
   }
-  menu.selection(0,3);
 }
 
 function nextPlayer(){
