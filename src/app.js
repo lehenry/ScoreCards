@@ -14,6 +14,15 @@ var Vector2 = require('vector2');
 var Settings = require('settings');
 console.log('Local: '+localStorage.getItem('playerNames'));
 var playersNames = [];
+var bgColor=[['#FFAAAA','#AAFFFF'],['#FF5555','#55FFFF']];
+if(Pebble.getActiveWatchInfo){
+var watch = Pebble.getActiveWatchInfo();
+  if(watch.platform=='aplite'){
+    bgColor=[['white','white'],['white','white']];
+  }
+}
+
+
 if(localStorage.getItem('playerNames')){
  playersNames = JSON.parse(localStorage.getItem('playerNames'));
 }
@@ -79,7 +88,7 @@ var PlayerCard=function(playerName,color){
     font: 'gothic_14',
     textAlign: 'center',
     color: 'blue',
-    backgroundColor: '#aaaaaa'
+    backgroundColor: bgColor[0][1]
   });
   this.wind.add(this.topScore);
   
@@ -342,7 +351,7 @@ function displayScores(){
 }
 
 function displayFullScores(){
-  var bgColor=[['#FFAAAA','#AAFFFF'],['#FF5555','#55FFFF']];
+  
   var fullScoreCard=new UI.Window({scrollable: true,backgroundColor: 'white'});
   //var scoreBody="";
   var l=144/(players.length);
