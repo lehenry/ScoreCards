@@ -24,7 +24,11 @@ var watch = Pebble.getActiveWatchInfo();
 
 
 if(localStorage.getItem('playerNames')){
- playersNames = JSON.parse(localStorage.getItem('playerNames'));
+  try {
+   playersNames = JSON.parse(localStorage.getItem('playerNames'));
+  } catch(err){
+    console.log(err);
+  }
 }
 // Load configuration
 Settings.config(
@@ -37,6 +41,8 @@ Settings.config(
     playersNames=Settings.option('playerNames');
     if(playersNames===null){
       playersNames=['Loïc'];
+    }else{
+      localStorage.setItem('playerNames', JSON.stringify(playersNames));
     }
     init();
 
