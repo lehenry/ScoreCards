@@ -18,14 +18,7 @@ var res = Feature.resolution();
 var playersNames = [];
 
 //table colors for full scores
-var bgColor=[['#FFAAAA','#AAFFFF'],['#FF5555','#55FFFF']];
-if(Pebble.getActiveWatchInfo){
-var watch = Pebble.getActiveWatchInfo();
-  //no colors for aplite
-  if(watch.platform=='aplite'){
-    bgColor=[['white','white'],['white','white']];
-  }
-}
+var bgColor=Feature.color([['#FFAAAA','#AAFFFF'],['#FF5555','#55FFFF']],[['white','white'],['white','white']]);
 
 //unserialize stored players
 if(localStorage.getItem('playerNames')){
@@ -73,7 +66,7 @@ var PlayerCard=function(playerName,color){
     //fullscreen: true,
   });
   this.title = new UI.Text({
-    position: new Vector2(0, 0),
+    position: new Vector2(0, 14),
     size: new Vector2(res.x, 55),
     font: 'gothic-28-bold',
     text: playerName,
@@ -105,7 +98,7 @@ var PlayerCard=function(playerName,color){
     text: "",
     font: 'gothic_14',
     textAlign: 'center',
-    color: 'blue',
+    color: Feature.color('blue','white'),
     backgroundColor: bgColor[0][1]
   });
   this.wind.add(this.topScore);
@@ -381,7 +374,7 @@ function displayScores(){
     if(players[i].active){
       //player name
       scoreCard.add(new UI.Text({
-          font: 'gothic-28-bold',
+          font: 'gothic-24-bold',
           position: new Vector2(0,i*30),
           size: new Vector2(res.x/2,30),
           text:players[i].playerName,
@@ -411,15 +404,16 @@ function displayScores(){
 }
 
 function displayScoresRound(){
-  var scoreCard=new UI.Window({scrollable: true,backgroundColor: 'white'});
+  var scoreCard=new UI.Window({scrollable: true, backgroundColor: 'white'});
   //for each player, display its score
+  //for scrolling purpose
   for(var i=0;i<players.length;i++){
     if(players[i].active){
       //player name
       scoreCard.add(new UI.Text({
-          font: 'gothic-28-bold',
-          position: new Vector2(30,(i+2)*30),
-          size: new Vector2(60,30),
+          font: 'gothic-24-bold',
+          position: new Vector2(20,(i+1)*30),
+          size: new Vector2(70,30),
           text:players[i].playerName,
           textAlign:'left',
           color:'black',
@@ -429,8 +423,8 @@ function displayScoresRound(){
       //player score
       scoreCard.add(new UI.Text({
             font: 'gothic-28',
-            position: new Vector2(90,(i+2)*30),
-            size: new Vector2(60,30),
+            position: new Vector2(90,(i+1)*30),
+            size: new Vector2(70,30),
             text:players[i].score+" ",
             textAlign:'right',
             color:'black',
@@ -439,6 +433,11 @@ function displayScoresRound(){
       }));
     }
   }
+    //for scrolling purpose
+  scoreCard.add(new UI.Rect({
+    position:scoreCard.size(),
+    size: scoreCard.size()
+  }));
   scoreCard.show();
   //on select, switch to full scores
   scoreCard.on('click', 'select',function(e){
@@ -448,16 +447,21 @@ function displayScoresRound(){
 
 // display full scores (per round)
 function displayFullScores(){
-  var fullScoreCard=new UI.Window({scrollable: true,backgroundColor: 'white'});
+  var fullScoreCard=new UI.Window({scrollable: true, backgroundColor: 'white'});
   //column length is window length divided by the number of players
   var l=res.x/(players.length);
   var h=18;
+  var maxLines=res.y/h;
+  var maxRound=players[0].roundScore.length;  
+  
+  var offset=Math.max((maxLines-maxRound-2)/2,0);
+  
   // header, players names
   for(var p=0;p<players.length;p++){
         if(players[p].active){
           var head=new UI.Text({
             font: 'gothic-14',
-            position: new Vector2(l*p,0),
+            position: new Vector2(l*p,offset*h),
             size: new Vector2(l,h),
             text:players[p].playerName,
             textAlign:'center',
@@ -469,13 +473,12 @@ function displayFullScores(){
         }
     }
   //for each round, players' round score
-  var maxRound=players[0].roundScore.length;
   for(var round=0;round<maxRound;round++){
     for(var i=0;i<players.length;i++){
         if(players[i].active){
           fullScoreCard.add(new UI.Text({
             font: 'gothic-14',
-            position: new Vector2(l*i,h*(round+1)),
+            position: new Vector2(l*i,h*(round+offset+1)),
             size: new Vector2(l,h),
             text:players[i].roundScore[round]+" ",
             textAlign:'right',
@@ -493,7 +496,7 @@ function displayFullScores(){
   for(var j=0;j<players.length;j++){
       fullScoreCard.add(new UI.Text({
         font: 'gothic-14',
-        position: new Vector2(l*j,h*(maxRound+1)),
+        position: new Vector2(l*j,h*(maxRound+offset+1)),
         size: new Vector2(l,h),
         text:players[j].score +" ",
         textAlign:'right',
@@ -502,7 +505,13 @@ function displayFullScores(){
         borderColor:'white',
         backgroundColor: 'black'
       }));
-  }  
+  }
+  //for scrolling purpose
+  fullScoreCard.add(new UI.Rect({
+    position:fullScoreCard.size(),
+    size: fullScoreCard.size()
+  }));
+  
   fullScoreCard.show();
   //on click, back to simple scores
   fullScoreCard.on('click', 'select',function(e){
