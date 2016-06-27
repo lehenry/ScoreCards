@@ -10,7 +10,6 @@
         "media": [
             {
                 "file": "images/menu_icon.png",
-                "menuIcon": true,
                 "name": "IMAGE_MENU_ICON",
                 "type": "bitmap"
             },
@@ -31,6 +30,7 @@
             },
             {
                 "file": "images/scoreCard.png",
+                "menuIcon": true,
                 "name": "IMAGES_SCORECARD_PNG",
                 "type": "bitmap"
             }
@@ -45,7 +45,7 @@
     ],
     "uuid": "20f3f89e-6cf9-4bda-a983-af8ad0803a3b",
     "versionCode": 1,
-    "versionLabel": "1.4",
+    "versionLabel": "1.5",
     "watchapp": {
         "hiddenApp": false,
         "watchface": false
